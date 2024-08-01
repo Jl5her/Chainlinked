@@ -6,12 +6,7 @@ export interface HowToPlayModalProps {
     // Add any props if needed
 }
 
-// Define the ref type for the component
-export interface HowToPlayModalRef {
-    open: () => void;
-}
-
-const HowToPlayModal = forwardRef<HowToPlayModalRef, HowToPlayModalProps>((props, ref) => {
+const HowToPlayModal = forwardRef<ModalRef, HowToPlayModalProps>((props, ref) => {
     const [open] = useState<boolean>(localStorage.getItem('howToPlay') === 'true');
     const modalRef = createRef<ModalRef>();
 

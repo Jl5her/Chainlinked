@@ -9,6 +9,20 @@ const loadGame = (gameKey: string): Game | null => {
     return games.find((g: Game) => g.gameKey === gameKey);
 }
 
+const saveGame = (game: Game) => {
+    const savedGames = localStorage.getItem('chainlink-games');
+    const games = savedGames !== null ? JSON.parse(savedGames).games : [];
+
+    let index = games.findIndex((g: Game) => g.gameKey === game.gameKey);
+    if (index !== -1) {
+        games[index] = game;
+    } else {
+        games.push(game);
+    }
+
+    localStorage.setItem('chainlink-games', JSON.stringify({ games }));
+}
+
 const useChainlink = (gameKey: string) => {
     const [words, setWords] = useState(loadGame(gameKey)?.words || []);
     const [mistakesRemaining, setMistakesRemaining] = useState(loadGame(gameKey)?.mistakesRemaining ?? 4);
@@ -21,14 +35,7 @@ const useChainlink = (gameKey: string) => {
         let loadedGame = loadGame(gameKey);
         setWords(loadedGame?.words ?? [])
         setMistakesRemaining(loadedGame?.mistakesRemaining ?? 4)
-
     }, [])
-
-    // const loadGame = (game: Game) => {
-    //     // set states for the game.
-    //     setWords(game.data.words);
-    //     setMistakesRemaining(game.data.mistakesRemaining);
-    // }
 
     // Attempt to load game when the game key changes
     useEffect(() => {
@@ -44,38 +51,29 @@ const useChainlink = (gameKey: string) => {
         // loadGame(game);
     }, [gameKey, createGame])
 
-    const saveGame = useCallback((game: Game) => {
-        const savedGames = localStorage.getItem('chainlink-games');
-        const games = savedGames !== null ? JSON.parse(savedGames).games : [];
-
-        let index = games.findIndex((g: Game) => g.gameKey === game.gameKey);
-        if (index !== -1) {
-            games[index] = game;
+    const saveState = useCallback((newWords: Word[] | null = null, newMistakes: number | null = null) => {
+        if (newWords !== null) {
+            setWords(newWords);
         } else {
-            games.push(game);
+            newWords = words;
         }
 
-        localStorage.setItem('chainlink-games', JSON.stringify({ games }));
-    }, [words])
+        if (newMistakes != null) {
+            setMistakesRemaining(newMistakes);
+        } else {
+            newMistakes = mistakesRemaining;
+        }
 
-    const saveState = useCallback(() => {
-        saveGame({
-            words,
-            mistakesRemaining,
-            gameKey
-        })
-    }, [saveGame, gameKey, words, mistakesRemaining])
-
-    const saveWords = useCallback((newWords: Word[]) => {
-        setWords(newWords);
         saveGame({
             words: newWords,
-            mistakesRemaining,
+            mistakesRemaining: newMistakes,
             gameKey
         });
-    }, []);
+    }, [gameKey, words, mistakesRemaining]);
 
     const submitWord = useCallback(() => {
+        if (mistakesRemaining <= 0) return;
+
         let currentWord = words.find(w => !w.revealed && w.unlocked);
         if (currentWord) {
             setCurrentGuess('');
@@ -83,7 +81,6 @@ const useChainlink = (gameKey: string) => {
 
             // Check if the word is correct
             if (isCorrect) {
-                console.log("Correct!")
                 let index = words.findIndex(w => w.text === currentWord!.text);
 
                 let newWords = words.map((w => w.text === currentWord!.text ? { ...w, revealed: true } : w));
@@ -92,19 +89,26 @@ const useChainlink = (gameKey: string) => {
                     newWords = newWords.map((w, i) => i === index + 1 ? { ...w, unlocked: true } : w);
                 }
 
-                saveWords(newWords);
+                saveState(newWords);
             } else {
-                console.log("Incorrect!");
+                let index = words.findIndex(w => w.text === currentWord!.text);
                 let newWords = words.map(w => w.text === currentWord!.text ? { ...w, strikes: w.strikes + 1 } : w);
-                saveWords(newWords);
-                setMistakesRemaining(prev => prev - 1);
+
+                if (currentWord.strikes + 1 >= currentWord.text.length - 1) {
+                    newWords = newWords.map(w => w.text === currentWord!.text ? { ...w, revealed: true } : w);
+                    if (index < newWords.length - 1) {
+                        newWords = newWords.map((w, i) => i === index + 1 ? { ...w, unlocked: true } : w);
+                    }
+                }
+
+                saveState(newWords, mistakesRemaining - 1);
             }
         }
-
-        // saveState();
-    }, [words, currentGuess])
+    }, [words, currentGuess, mistakesRemaining, saveState])
 
     const handleKeyPress = useCallback((key: string) => {
+        if (mistakesRemaining <= 0) return;
+
         let currentWord = words.find(w => !w.revealed && w.unlocked);
         if (!currentWord) return;
 
@@ -125,7 +129,7 @@ const useChainlink = (gameKey: string) => {
                 return;
             }
         }
-    }, [words, currentGuess, submitWord])
+    }, [words, currentGuess, submitWord, mistakesRemaining])
 
     return {
         words,

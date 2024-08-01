@@ -49,6 +49,11 @@
         &.incorrect {
             background: var(--red);
         }
+
+        &.gameOver {
+            background: var(--gray);
+            color: white !important;
+        }
     }
 }
 

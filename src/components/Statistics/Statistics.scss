@@ -1,0 +1,58 @@
+.statistics {
+    margin-bottom: 10px;
+}
+
+.statistics,
+dialog .Modal-Content {
+    h2.stats-title {
+        padding-top: 0;
+        font-weight: 700;
+        font-size: 14px;
+        text-transform: uppercase;
+        margin: 0;
+        line-height: 20px;
+        margin-bottom: 10px;
+        letter-spacing: 0.05em;
+        color: black;
+        -webkit-font-smoothing: antialiased;
+        font-family: nyt-franklin, Arial, sans-serif;
+    }
+
+    ul.stats {
+        display: flex;
+        width: 100%;
+        margin-bottom: 10px;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+
+        li {
+            margin-left: 12px;
+            flex: 1;
+
+            span {
+                font-size: 44px;
+                font-weight: 500;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                letter-spacing: 0.05em;
+                font-variant-numeric: proportional-nums;
+                line-height: 34px;
+            }
+
+            label {
+                margin-top: 4px;
+                font-size: 12px;
+                font-weight: 400;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align:center;
+                line-height: 14px;
+                letter-spacing: .1em;
+                -webkit-font-smoothing: antialiased;
+            }
+        }
+    }
+}

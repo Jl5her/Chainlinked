@@ -8,6 +8,7 @@
     --green: #6aaa64;
     --border-color: #d3d6da;
     --content-border: #878a8c;
+    --share-color: #58a351;
 }
 
 html {
@@ -88,5 +89,34 @@ html {
             font-size: 28px;
             font-weight: 300;
         }
+    }
+}
+
+button.share {
+    width: 200px;
+    height: 44px;
+    min-width: fit-content;
+    padding: 0 1rem;
+    background-color: var(--share-color);
+    border-radius: 104px;
+    border: none;
+    margin: 0 auto;
+    margin-top: 1rem;
+    cursor: pointer;
+    color: white;
+    align-items: center;
+    text-align: center;
+    display: block;
+
+    span {
+        font: 600 16px/20px "nyt-franklin";
+        letter-spacing: 0.64px;
+        -webkit-font-smoothing: antialiased;
+        vertical-align: baseline;
+    }
+
+    svg {
+        vertical-align: middle;
+        margin-left: 10px;
     }
 }

@@ -5,6 +5,8 @@ type MistakeProps = {
 }
 
 const Mistakes = ({ remaining }: MistakeProps) => {
+    if (remaining <= 0) return <p className='mistake-text'></p>;
+
     return <p className="mistake-text">Mistakes remaining:
         <span className="mistakes">
             {Array.from({ length: remaining }).map((_, index) => (

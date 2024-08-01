@@ -1,0 +1,67 @@
+.distribution {
+    margin-bottom: 20px;
+}
+
+.distribution,
+dialog .Modal-Content {
+    h2.mistakes-title {
+        padding-top: 0;
+        font-weight: 700;
+        font-size: 14px;
+        text-transform: uppercase;
+        margin: 0;
+        line-height: 20px;
+        margin-bottom: 10px;
+        letter-spacing: 0.05em;
+        color: black;
+        -webkit-font-smoothing: antialiased;
+        font-family: nyt-franklin, Arial, sans-serif;
+    }
+
+    .mistakeDistribution {
+        width: 50%;
+        
+        .graphContainer {
+            width: 100%;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            padding-bottom: 4px;
+            font-size: 14px;
+            line-height: 20px;
+            font-family: nyt-franklin, Arial, sans-serif;
+
+            label {
+                font-weight: bold;
+                font-size: 12px;
+                line-height: 18px;
+                letter-spacing: 0.1em;
+            }
+
+            .graph {
+                width: 100%;
+                height: 100%;
+                padding-left: 4px;
+
+                .bar {
+                    background-color: #787c7e;
+                    position: relative;
+                    height: 100%;
+                    display: flex;
+                    justify-content: flex-end;
+                    align-items: center;
+                    min-width: 20px;
+
+                    span {
+                        font-weight: bold;
+                        color: #fff;
+                        font-size: 12px;
+                        line-height: 18px;
+                        padding-right: 8px;
+                    }
+                }
+            }
+        }
+    }
+
+}
