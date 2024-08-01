@@ -1,0 +1,58 @@
+:root {
+    --keyboard-height: 200px;
+    --header-height: 65px;
+    --key-text-color: #000;
+    --key-bg: #d3d6da;
+}
+
+.Keyboard {
+    height: var(--keyboard-height);
+    width: 100%;
+
+    .Keyboard-row {
+        display: flex;
+        width: 100%;
+        margin: 0 auto 8px;
+        touch-action: manipulation;
+        border: 0;
+        padding: 0;
+        vertical-align: baseline;
+        user-select: none;
+
+
+        button {
+            font-family: nyt-franklin, 'Arial Narrow', Arial, sans-serif;
+            font-size: 1.25rem;
+            font-weight: bold;
+            border: 0;
+            padding: 0;
+            margin: 0 6px 0 0;
+            height: 58px;
+            border-radius: 4px;
+            user-select: none;
+            background-color: var(--key-bg);
+            color: var(--key-text-color);
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-transform: uppercase;
+            overflow: visible;
+            line-height: 1.15;
+            cursor: pointer;
+
+            &.Key-Enter {
+                font-size: 12px;
+                flex: 1.5;
+            }
+        }
+
+        .Key.Spacer {
+            flex: 0.5;
+            display: block;
+            margin: 0;
+            padding: 0;
+            border: 0;
+        }
+    }
+}

@@ -1,0 +1,131 @@
+.dark {
+    --dialog-bg-color: rgba(0, 0, 0, 0.5);
+    --modal-border-color: #1a1a1b;
+    --modal-bg-color: #121213;
+    --modal-close-fill: #fff;
+    --modal-font-color: #f8f8f8;
+}
+
+:root {
+    --dialog-bg-color: rgba(255, 255, 255, 0.5);
+    --modal-border-color: #f6f7f8;
+    --modal-bg-color: #fff;
+    --modal-close-fill: #000;
+    --modal-font-color: #000;
+}
+
+dialog {
+    padding: 0;
+    padding-top: 30px;
+    height: calc(100% - 30px);
+    display: flex;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    border: none;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--dialog-bg-color);
+    z-index: 2000;
+
+    .Modal {
+        max-width: 520px;
+        padding: 32px;
+        position: relative;
+        border-radius: 8px;
+        border: 1px solid var(--modal-border-color);
+        background-color: var(--modal-bg-color);
+        color: var(--modal-font-color);
+        box-shadow: 0px 4px 23px 0 rgba(0, 0, 0, 0.2);
+        width: 90%;
+        max-height: 100%;
+        animation: FlyIn 200ms;
+        box-sizing: border-box;
+        margin: 0;
+
+        button.closeButton {
+            width: 30px;
+            height: 30px;
+            background: none;
+            border: none;
+            padding: 0;
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            user-select: none;
+            animation: FlyIn 200ms;
+            text-decoration: none;
+            overflow: visible;
+            margin: 0;
+            line-height: 1.5;
+
+            svg {
+                width: 100%;
+                height: auto;
+                fill: var(--modal-close-fill);
+            }
+        }
+
+        .Modal-Content {
+            padding: 16px;
+            width: 100%;
+            box-sizing: border-box;
+
+            h2 {
+                font-family: nyt-karnakcondensed, 'Arial Narrow', Arial, sans-serif;
+                font-weight: 700;
+                font-size: 28px;
+                letter-spacing: 0;
+                line-height: 30px;
+                text-transform: none;
+                text-align: left;
+                margin-bottom: 4px;
+                margin-top: 29px;
+                display: block;
+            }
+            
+            .example {
+                margin: 0;
+                margin-top: 8px;
+                margin-bottom: 20px;
+            }
+
+            p {
+                margin: 0;
+                margin-top: 8px;
+            }
+
+            ul {
+                padding-inline-start: 20px;
+            }
+
+            strong {
+                font-family: nyt-karnakcondensed;
+            }
+
+            .word {
+                margin: 0;
+                justify-content:start;
+                .letter {
+                    width: 27px;
+                    height: 27px;
+                    font-size: 20px;
+                    margin: 1px;
+                }
+            }
+        }
+    }
+}
+
+@keyframes FlyIn {
+    0% {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0px);
+        opacity: 1;
+    }
+}

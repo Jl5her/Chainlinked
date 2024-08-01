@@ -1,0 +1,25 @@
+.mistake-text {
+    display: flex;
+    align-items: center;
+    color: black;
+    margin: 1.5rem auto;
+    font-family: nyt-franklin, 'Arial Narrow', Arial, sans-serif;
+    font-weight: 500;
+    -webkit-font-smoothing: antialiased;
+
+
+    .mistakes {
+        margin-left: 10px;
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        min-width: 120px;
+    }
+
+    .mistake-bubble {
+        width: 16px;
+        height: 16px;
+        border-radius: 99999px;
+        background-color: #5a594e;
+    }
+}
