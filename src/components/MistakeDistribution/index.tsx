@@ -1,4 +1,5 @@
 import { Game } from "chainlinked";
+import constants from "../../constants";
 import "./MistakeDistribution.scss";
 
 interface MistakeDistributionProps {
@@ -7,14 +8,18 @@ interface MistakeDistributionProps {
 
 const MistakeDistribution = ({ games }: MistakeDistributionProps) => {
 
+    const getTotalStrikes = (game: Game) => {
+        return game.words.reduce((total, word) => total + word.strikes, 0);
+    }
+
     // Calculate the distribution of mistakes remaining on games into buckets max remaining mistakes. Include in each bucket the percentage of the max it is.
     // First filtering out games that are not complete, then mapping the mistakes remaining to an array of mistakes.
     const mistakes = games
-        .filter(g => g.mistakesRemaining === 0 || g.words.find(w => !w.revealed) == null)
-        .map(g => g.mistakesRemaining);
+        .filter(g => getTotalStrikes(g) === constants.MAX_STRIKES || g.words.find(w => !w.revealed) == null)
+        .map(getTotalStrikes);
 
-    const maxMistakes = Math.max(...mistakes);
-    const mistakeDistribution = Array(Math.max(4, maxMistakes) + 1).fill(0);
+    const maxMistakes = Math.max(...mistakes, constants.MAX_STRIKES);
+    const mistakeDistribution = Array(maxMistakes + 1).fill(0);
     mistakes.forEach(m => {
         mistakeDistribution[m] += 1;
     });

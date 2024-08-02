@@ -13,22 +13,21 @@ dialog .Modal-Content {
         line-height: 20px;
         margin-bottom: 10px;
         letter-spacing: 0.05em;
-        color: black;
+        color: var(--font-color);
         -webkit-font-smoothing: antialiased;
         font-family: nyt-franklin, Arial, sans-serif;
     }
 
-    ul.stats {
+    .stats {
         display: flex;
-        width: 100%;
         margin-bottom: 10px;
-        list-style: none;
         margin: 0;
+        gap: 12px;
         padding: 0;
 
-        li {
-            margin-left: 12px;
-            flex: 1;
+        div {
+            min-width: 70px;
+            flex: 0;
 
             span {
                 font-size: 44px;
@@ -36,6 +35,7 @@ dialog .Modal-Content {
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                box-sizing: border-box;
                 letter-spacing: 0.05em;
                 font-variant-numeric: proportional-nums;
                 line-height: 34px;
@@ -45,10 +45,11 @@ dialog .Modal-Content {
                 margin-top: 4px;
                 font-size: 12px;
                 font-weight: 400;
+                box-sizing: border-box;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                text-align:center;
+                text-align: center;
                 line-height: 14px;
                 letter-spacing: .1em;
                 -webkit-font-smoothing: antialiased;

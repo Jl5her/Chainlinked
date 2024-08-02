@@ -1,6 +1,7 @@
 import { Game, Word } from "chainlinked";
-import { useCallback, useEffect, useState } from "react";
+import { createRef, useCallback, useEffect, useMemo, useState } from "react";
 import { generateGame } from "./Game";
+import constants from "./constants";
 
 const loadGame = (gameKey: string): Game | null => {
     const savedGames = localStorage.getItem('chainlink-games');
@@ -25,8 +26,19 @@ const saveGame = (game: Game) => {
 
 const useChainlink = (gameKey: string) => {
     const [words, setWords] = useState(loadGame(gameKey)?.words || []);
-    const [mistakesRemaining, setMistakesRemaining] = useState(loadGame(gameKey)?.mistakesRemaining ?? 4);
     const [currentGuess, setCurrentGuess] = useState('')
+
+    // Map words to dictionary text to createRefs 
+    const wordRefs = useMemo(() => {
+        return words.reduce((acc, word) => {
+            acc[word.text] = createRef();
+            return acc;
+        }, {} as { [key: string]: React.RefObject<HTMLDivElement> })
+    }, [words])
+
+    const totalStrikes = useMemo(() => {
+        return words.reduce((acc, word) => acc + word.strikes, 0);
+    }, [words])
 
     const createGame = useCallback(async (gameKey: string) => {
         var game = await generateGame(7, gameKey);
@@ -34,7 +46,6 @@ const useChainlink = (gameKey: string) => {
 
         let loadedGame = loadGame(gameKey);
         setWords(loadedGame?.words ?? [])
-        setMistakesRemaining(loadedGame?.mistakesRemaining ?? 4)
     }, [])
 
     // Attempt to load game when the game key changes
@@ -44,40 +55,36 @@ const useChainlink = (gameKey: string) => {
 
         let game = games.find((g: Game) => g.gameKey === gameKey);
         if (game === undefined) {
-            game = createGame(gameKey);
-            return;
+            createGame(gameKey);
         }
-
-        // loadGame(game);
     }, [gameKey, createGame])
 
-    const saveState = useCallback((newWords: Word[] | null = null, newMistakes: number | null = null) => {
+    const saveState = useCallback((newWords: Word[] | null = null) => {
         if (newWords !== null) {
             setWords(newWords);
         } else {
             newWords = words;
         }
 
-        if (newMistakes != null) {
-            setMistakesRemaining(newMistakes);
-        } else {
-            newMistakes = mistakesRemaining;
-        }
-
         saveGame({
             words: newWords,
-            mistakesRemaining: newMistakes,
             gameKey
         });
-    }, [gameKey, words, mistakesRemaining]);
+    }, [gameKey, words]);
 
     const submitWord = useCallback(() => {
-        if (mistakesRemaining <= 0) return;
+        if (totalStrikes >= constants.MAX_STRIKES) return;
 
         let currentWord = words.find(w => !w.revealed && w.unlocked);
         if (currentWord) {
+            let currentWordRemaining = currentWord.text.substring(currentWord.strikes + 1)
+            if (currentGuess.length !== currentWordRemaining.length) {
+                return;
+            }
+
             setCurrentGuess('');
-            const isCorrect = currentWord.text.substring(currentWord.strikes + 1).toLowerCase() === currentGuess.toLowerCase();
+
+            const isCorrect = currentWordRemaining.toLowerCase() === currentGuess.toLowerCase();
 
             // Check if the word is correct
             if (isCorrect) {
@@ -101,13 +108,20 @@ const useChainlink = (gameKey: string) => {
                     }
                 }
 
-                saveState(newWords, mistakesRemaining - 1);
+                let wordRef = wordRefs[currentWord.text].current;
+                wordRef?.classList.add('shake');
+
+                setTimeout((ref) => {
+                    ref?.classList.remove('shake');
+                }, 1000, wordRef);
+
+                saveState(newWords);
             }
         }
-    }, [words, currentGuess, mistakesRemaining, saveState])
+    }, [words, totalStrikes, currentGuess, saveState, wordRefs])
 
     const handleKeyPress = useCallback((key: string) => {
-        if (mistakesRemaining <= 0) return;
+        if (totalStrikes >= constants.MAX_STRIKES) return;
 
         let currentWord = words.find(w => !w.revealed && w.unlocked);
         if (!currentWord) return;
@@ -129,11 +143,11 @@ const useChainlink = (gameKey: string) => {
                 return;
             }
         }
-    }, [words, currentGuess, submitWord, mistakesRemaining])
+    }, [words, totalStrikes, currentGuess, submitWord])
 
     return {
         words,
-        mistakesRemaining,
+        wordRefs,
         submitWord,
         handleKeyPress,
         currentGuess

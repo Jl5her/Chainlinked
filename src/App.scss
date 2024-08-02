@@ -9,6 +9,43 @@
     --border-color: #d3d6da;
     --content-border: #878a8c;
     --share-color: #58a351;
+    --key-text-color: #000;
+    --key-bg: #d3d6da;
+    --dialog-bg-color: rgba(255, 255, 255, 0.5);
+    --modal-border-color: #f6f7f8;
+    --modal-bg-color: #fff;
+    --modal-close-fill: #000;
+    --font-color: #000;
+    --modal-bar-bg-color: #787c7e;
+    --mistake-bg-color: #5a594e;
+    --correct-font-color: var(--bg-color);
+    --tile-font-color: var(--bg-color);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-color: #121213;
+        --dark-gray: #3a3a3c;
+        --white: #f8f8f8;
+        --gray: #626262;
+        --light: #999999;
+        --red: #E3573C;
+        --green: #6aaa64;
+        --border-color: #878a8c;
+        --content-border: #d3d6da;
+        --share-color: #58a351;
+        --key-text-color: #f8f8f8;
+        --key-bg: #818384;
+        --dialog-bg-color: rgba(255, 255, 255, 0.5);
+        --dialog-bg-color: rgba(0, 0, 0, 0.5);
+        --modal-border-color: #1a1a1b;
+        --modal-bg-color: #121213;
+        --modal-close-fill: #fff;
+        --font-color: #f8f8f8;
+        --modal-bar-bg-color: #3a3a3c;
+        --mistake-bg-color: #edece2;
+        --tile-font-color: var(--white);
+    }
 }
 
 html {
@@ -18,6 +55,7 @@ html {
     font-family: nyt-franklin;
     font-size: 18px;
     font-weight: 500;
+    overflow: none;
 }
 
 .App {
@@ -34,19 +72,53 @@ html {
         flex-direction: row;
         align-items: center;
         justify-content: space-around;
+        gap: 0.5rem;
+    }
+}
 
-        button {
-            height: 44px;
-            min-height: 35px;
-            padding: 0 16px;
-            margin: 0 13px;
-            width: 172px;
-            font-family: nyt-franklin, 'Arial Narrow', Arial, sans-serif;
-            border: 1px solid black;
-            color: black;
-            border-radius: 9999px;
-            background: white;
+.button {
+    min-height: 35px;
+    padding: 12px 2rem;
+    margin: 0;
+    font-family: nyt-franklin, 'Arial Narrow', Arial, sans-serif;
+    border: 1px solid black;
+    color: black;
+    border-radius: 104px;
+    background: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:has(span) {
+        padding: 12px 1rem;
+        span {
+            margin-right: 0.5rem;
         }
+    }
+
+    span {
+        line-height: 17px;
+        vertical-align: middle;
+    }
+
+    svg {
+        vertical-align: middle;
+        height: 17px;
+        width: auto;
+    }
+}
+
+.share-button {
+    background-color: var(--share-color);
+    border: none;
+    color: white;
+
+    span {
+        font: 600 16px/20px "nyt-franklin";
+        letter-spacing: 0.64px;
+        -webkit-font-smoothing: antialiased;
+        vertical-align: baseline;
     }
 }
 
@@ -64,6 +136,7 @@ html {
         Arial,
         sans-serif;
     font-weight: 300;
+    color: var(--font-color);
 
     @media (max-width: 720px) {
         display: none;
@@ -92,31 +165,61 @@ html {
     }
 }
 
-button.share {
-    width: 200px;
-    height: 44px;
-    min-width: fit-content;
-    padding: 0 1rem;
-    background-color: var(--share-color);
-    border-radius: 104px;
-    border: none;
-    margin: 0 auto;
-    margin-top: 1rem;
-    cursor: pointer;
-    color: white;
-    align-items: center;
-    text-align: center;
-    display: block;
 
-    span {
-        font: 600 16px/20px "nyt-franklin";
-        letter-spacing: 0.64px;
-        -webkit-font-smoothing: antialiased;
-        vertical-align: baseline;
+.lds-ripple,
+.lds-ripple div {
+    box-sizing: border-box;
+}
+
+.lds-ripple {
+    display: inline-block;
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+
+.lds-ripple div {
+    position: absolute;
+    border: 4px solid var(--font-color);
+    opacity: 1;
+    border-radius: 50%;
+    animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+
+.lds-ripple div:nth-child(2) {
+    animation-delay: -0.5s;
+}
+
+@keyframes lds-ripple {
+    0% {
+        top: 36px;
+        left: 36px;
+        width: 8px;
+        height: 8px;
+        opacity: 0;
     }
 
-    svg {
-        vertical-align: middle;
-        margin-left: 10px;
+    4.9% {
+        top: 36px;
+        left: 36px;
+        width: 8px;
+        height: 8px;
+        opacity: 0;
+    }
+
+    5% {
+        top: 36px;
+        left: 36px;
+        width: 8px;
+        height: 8px;
+        opacity: 1;
+    }
+
+    100% {
+        top: 0;
+        left: 0;
+        width: 80px;
+        height: 80px;
+        opacity: 0;
     }
 }

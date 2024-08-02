@@ -35,17 +35,17 @@ const HowToPlayModal = forwardRef<ModalRef, HowToPlayModalProps>((props, ref) =>
                 <div className='letter revealed'>u</div>
                 <div className='letter revealed'>b</div>
             </div>
-            <p>The starting word is <b>CLUB</b></p>
+            <p>The starting word is <b>CLUB</b>.</p>
         </div>
 
         <div className="example">
             <div className='word correct'>
-                <div className='letter'>s</div>
-                <div className='letter'>o</div>
-                <div className='letter'>d</div>
-                <div className='letter'>a</div>
+                <div className='letter' style={{ background: 'var(--green)', color: 'var(--tile-font-color)' }}>s</div>
+                <div className='letter' style={{ background: 'var(--green)', color: 'var(--tile-font-color)' }}>o</div>
+                <div className='letter' style={{ background: 'var(--green)', color: 'var(--tile-font-color)' }}>d</div>
+                <div className='letter' style={{ background: 'var(--green)', color: 'var(--tile-font-color)' }}>a</div>
             </div>
-            <p>Adding <b>SODA</b> makes <b>CLUB SODA</b></p>
+            <p>Adding <b>SODA</b> makes the compound, <b>CLUB SODA</b>.</p>
         </div>
 
         <div className="example">
@@ -54,13 +54,13 @@ const HowToPlayModal = forwardRef<ModalRef, HowToPlayModalProps>((props, ref) =>
                 <div className='letter'></div>
                 <div className='letter'></div>
             </div>
-            <p>The second compound word with <b>SODA</b> starts with <b>P</b></p>
+            <p>Now a new compound with the word <b>SODA</b>, the second word starts with the letter <b>P</b>.</p>
         </div>
 
         <div className="example">
             <div className='word'>
                 <div className='letter revealed'>p</div>
-                <div className='letter incorrect'>o</div>
+                <div className='letter incorrect' style={{ background: 'var(--red)' }}>o</div>
                 <div className='letter'></div>
             </div>
             <p>After guessing incorrectly, the second letter <b>O</b> is given.</p>

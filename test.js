@@ -1,24 +1,23 @@
-import BadWordsFilter from 'bad-words';
-import { Game } from 'chainlinked';
-import Papa from 'papaparse';
-import seedrandom from 'seedrandom';
+const BadWordsFilter = require('bad-words');
+const Papa = require('papaparse');
+const seedrandom = require('seedrandom');
+const fs = require('fs')
 
 var filter = new BadWordsFilter();
 
 // Load the CSV file and parse it
-const loadData = async (): Promise<{ [key: string]: string[] }> => {
-    const c1_to_c2: { [key: string]: string[] } = {};
+const loadData = async ()=> {
+    const c1_to_c2 = {};
 
-    const response = await fetch('/assets/LADECv1-2019.csv');
-    const csvText = await response.text();
+    const text = fs.readFileSync('./public/assets/LADECv1-2019.csv', 'utf8');
 
-    Papa.parse(csvText, {
+    Papa.parse(text, {
         header: true,
         skipEmptyLines: true,
-        complete: (results: any) => {
+        complete: (results) => {
             results.data
                 .filter(shouldInclude)
-                .forEach(({ c1, c2 }: any) => {
+                .forEach(({ c1, c2 }) => {
                     if (!c1_to_c2[c1]) {
                         c1_to_c2[c1] = [];
                     }
@@ -31,7 +30,7 @@ const loadData = async (): Promise<{ [key: string]: string[] }> => {
     return c1_to_c2;
 };
 
-const shouldInclude = (row: any): boolean => {
+const shouldInclude = (row) => {
     const { c1, c1len, c2, c2len, isPlural, correctParse, isCommonstim } = row;
 
     if (c1len > 7 || c2len > 7) {
@@ -54,7 +53,7 @@ const shouldInclude = (row: any): boolean => {
 }
 
 // Function to generate a sequence
-export const generateGame = async (length: number, gameKey?: string): Promise<Game> => {
+const generateGame = async (length, gameKey = undefined) => {
 
     if (gameKey === undefined) {
         gameKey = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
@@ -62,10 +61,10 @@ export const generateGame = async (length: number, gameKey?: string): Promise<Ga
 
     const rng = seedrandom(gameKey);
 
-    const c1_to_c2: { [key: string]: string[] } = await loadData();
+    const c1_to_c2 = await loadData();
 
-    const skipList: string[] = [];
-    const sequence: string[] = [];
+    const skipList = [];
+    const sequence = [];
 
     while (sequence.length < length) {
         if (sequence.length === 0) {
@@ -90,7 +89,7 @@ export const generateGame = async (length: number, gameKey?: string): Promise<Ga
         sequence.push(choice);
     }
 
-    var game: Game = {
+    var game = {
         words: sequence.map(word => ({
             guesses: [],
             text: word,
@@ -106,3 +105,12 @@ export const generateGame = async (length: number, gameKey?: string): Promise<Ga
 
     return game;
 };
+
+const tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+const todayKey = new Date(Date.now() - tzoffset).toISOString().split('T')[0]
+
+generateGame(7, todayKey).then(game => {
+    game.words.forEach((element, index) => {
+        console.log(`Word ${index}: ${element.text}`);
+    });
+})

@@ -1,7 +1,6 @@
 declare module "chainlinked" {
     export interface Game {
         words: Word[];
-        mistakesRemaining: number;
         gameKey: string;
     }
 

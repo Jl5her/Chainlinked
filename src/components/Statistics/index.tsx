@@ -1,14 +1,18 @@
 import { Game } from "chainlinked";
 import "./Statistics.scss";
+import constants from "../../constants";
 
 type StatisticsProps = {
     games: Game[];
 }
 
 const Statistics = ({ games }: StatisticsProps) => {
+    const getTotalStrikes = (game: Game) => {
+        return game.words.reduce((total, word) => total + word.strikes, 0);
+    }
 
-    const played = games.length;
-    const wins = games.filter((g) => g.mistakesRemaining > 0 && g.words.find(w => !w.revealed) == null).length;
+    const played = games.filter(g => getTotalStrikes(g) === constants.MAX_STRIKES || g.words.find(w => !w.revealed) == null).length;
+    const wins = games.filter((g) => getTotalStrikes(g) < constants.MAX_STRIKES && g.words.find(w => !w.revealed) == null).length;
     const winPercentage = Math.round(100 * (wins / played));
 
     // Each game's gameKey is the date it was played. Determine the current streak by checking how many days in a row the user has played.
@@ -42,24 +46,24 @@ const Statistics = ({ games }: StatisticsProps) => {
 
     return <div className="statistics">
         <h2 className="stats-title">Statistics</h2>
-        <ul className="stats">
-            <li>
-                <span>{games.length}</span>
+        <div className="stats">
+            <div>
+                <span>{played}</span>
                 <label>Played</label>
-            </li>
-            <li>
+            </div>
+            <div>
                 <span>{winPercentage}</span>
                 <label>Win %</label>
-            </li>
-            <li>
+            </div>
+            <div>
                 <span>{currentStreak}</span>
                 <label>Current Streak</label>
-            </li>
-            <li>
+            </div>
+            <div>
                 <span>{maxStreak}</span>
                 <label>Max Streak</label>
-            </li>
-        </ul>
+            </div>
+        </div>
     </div>
 }
 

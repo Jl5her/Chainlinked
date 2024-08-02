@@ -1,9 +1,10 @@
-import { HowToPlayModal, Keyboard, Mistakes, ModalRef, Row } from "./components";
+import { HowToPlayModal, Keyboard, Mistakes, ModalRef, RandomGameButton, Row } from "./components";
 import { Word } from "chainlinked";
 import useChainlink from "./useChainlink";
-import { createRef, useEffect } from "react";
+import { createRef, useEffect, useMemo } from "react";
 import './App.scss';
 import GameOverModal from "./components/GameOverModal";
+import constants from "./constants";
 
 const App = () => {
   const tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
@@ -16,13 +17,11 @@ const App = () => {
   var url = new URLSearchParams(window.location.search);
   const gameKey = url.get('gameKey') ?? todayKey;
 
-  const { words, mistakesRemaining, currentGuess, handleKeyPress } = useChainlink(gameKey);
+  const { words, wordRefs, currentGuess, handleKeyPress } = useChainlink(gameKey);
 
-  const randomGame = () => {
-    // navigate to ?gameKey=randomGameKey where randomGameKey is a random string of 10 characters
-    const randomGameKey = Math.random().toString(36).substring(2, 12);
-    window.location.search = `gameKey=${randomGameKey}`;
-  }
+  const totalStrikes = useMemo(() => {
+    return words?.reduce((acc, word) => acc + word.strikes, 0);
+  }, [words]);
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (event.altKey || event.ctrlKey || event.shiftKey || event.metaKey) return;
@@ -30,27 +29,47 @@ const App = () => {
   };
 
   useEffect(() => {
-    if (mistakesRemaining <= 0) {
+    if (totalStrikes >= constants.MAX_STRIKES) {
       gameOver.current?.open();
     }
 
-    const gameWon = words != null && words.length > 0 && words.every((word) => word.revealed) && mistakesRemaining > 0;
+    const gameWon = words != null && words.length > 0 && words.every((word) => word.revealed) && totalStrikes < constants.MAX_STRIKES;
     if (gameWon) {
       gameOver.current?.open();
     }
-  }, [mistakesRemaining, words, gameOver])
+  }, [words, gameOver, totalStrikes])
 
   return <>
     <HowToPlayModal ref={howToPlay} />
     <GameOverModal ref={gameOver}
       words={words}
-      mistakesRemaining={mistakesRemaining}
       gameKey={gameKey} />
 
     <div className="App">
       <div className="gameBar">
-        <button onClick={() => howToPlay.current?.open()}>How To Play</button>
-        <button onClick={randomGame}>Random Game</button>
+        <button
+          className="button"
+          onClick={() => howToPlay.current?.open()}>
+          <svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="24.000000pt" height="24.000000pt" viewBox="0 0 24.000000 24.000000" preserveAspectRatio="xMidYMid meet">
+            <g transform="translate(0.000000,24.000000) scale(0.100000,-0.100000)" fill="#000000" stroke="none">
+              <path d="M71 206 c-87 -48 -50 -186 49 -186 51 0 100 49 100 99 0 75 -83 124 -149 87z m104 -31 c33 -32 33 -78 0 -110 -49 -50 -135 -15 -135 55 0 41 39 80 80 80 19 0 40 -9 55 -25z" />
+              <path d="M90 165 c-17 -20 -5 -32 15 -15 26 22 43 -4 20 -30 -10 -11 -15 -23 -12 -27 10 -9 47 27 47 47 0 37 -47 53 -70 25z" />
+              <path d="M110 70 c0 -5 5 -10 10 -10 6 0 10 5 10 10 0 6 -4 10 -10 10 -5 0 -10 -4 -10 -10z" />
+            </g>
+          </svg>
+        </button>
+
+        <button className="button" onClick={() => { gameOver.current?.open(); }}>
+          <svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="50.000000pt" height="50.000000pt" viewBox="0 0 50.000000 50.000000" preserveAspectRatio="xMidYMid meet">
+            <g transform="translate(0.000000,50.000000) scale(0.100000,-0.100000)" fill="#000000" stroke="none">
+              <path d="M340 230 l0 -230 70 0 70 0 0 230 0 230 -70 0 -70 0 0 -230z m120 0 l0 -210 -50 0 -50 0 0 210 0 210 50 0 50 0 0 -210z" />
+              <path d="M20 165 l0 -165 70 0 70 0 0 165 0 165 -70 0 -70 0 0 -165z m120 0 l0 -145 -50 0 -50 0 0 145 0 145 50 0 50 0 0 -145z" />
+              <path d="M180 110 l0 -110 70 0 70 0 0 110 0 110 -70 0 -70 0 0 -110z m120 0 l0 -90 -50 0 -50 0 0 90 0 90 50 0 50 0 0 -90z" />
+            </g>
+          </svg>
+        </button>
+
+        <RandomGameButton />
       </div>
 
       <div className="title">
@@ -62,11 +81,13 @@ const App = () => {
       </div>
 
       <div className="Game">
+        {words.length === 0 ? <div className="lds-ripple"><div></div><div></div></div> : <></>}
         {words.map((word: Word, index: number) =>
           <Row
             key={`word-${index}`}
+            ref={wordRefs[word.text]}
             word={word}
-            mistakesRemaining={mistakesRemaining}
+            totalStrikes={totalStrikes}
             currentGuess={currentGuess} />
         )}
       </div>
@@ -77,7 +98,7 @@ const App = () => {
           onBlur={({ target }) => target.focus()}
           autoFocus /> : <></>}
 
-      <Mistakes remaining={mistakesRemaining} />
+      <Mistakes totalStrikes={totalStrikes} />
       <Keyboard onKeyPress={handleKeyPress} />
     </div>
   </>

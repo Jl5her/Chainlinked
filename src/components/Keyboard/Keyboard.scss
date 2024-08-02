@@ -1,8 +1,6 @@
 :root {
     --keyboard-height: 200px;
     --header-height: 65px;
-    --key-text-color: #000;
-    --key-bg: #d3d6da;
 }
 
 .Keyboard {
@@ -45,6 +43,10 @@
                 font-size: 12px;
                 flex: 1.5;
             }
+        }
+
+        .Key.Backspace svg {
+            fill: var(--key-text-color)
         }
 
         .Key.Spacer {

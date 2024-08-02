@@ -1,10 +1,12 @@
+import constants from '../../constants';
 import './Mistakes.scss';
 
 type MistakeProps = {
-    remaining: number;
+    totalStrikes: number;
 }
 
-const Mistakes = ({ remaining }: MistakeProps) => {
+const Mistakes = ({ totalStrikes }: MistakeProps) => {
+    const remaining = constants.MAX_STRIKES - totalStrikes;
     if (remaining <= 0) return <p className='mistake-text'></p>;
 
     return <p className="mistake-text">Mistakes remaining:

@@ -1,17 +1,6 @@
-.dark {
-    --dialog-bg-color: rgba(0, 0, 0, 0.5);
-    --modal-border-color: #1a1a1b;
-    --modal-bg-color: #121213;
-    --modal-close-fill: #fff;
-    --modal-font-color: #f8f8f8;
-}
+
 
 :root {
-    --dialog-bg-color: rgba(255, 255, 255, 0.5);
-    --modal-border-color: #f6f7f8;
-    --modal-bg-color: #fff;
-    --modal-close-fill: #000;
-    --modal-font-color: #000;
 }
 
 dialog {
@@ -36,7 +25,7 @@ dialog {
         border-radius: 8px;
         border: 1px solid var(--modal-border-color);
         background-color: var(--modal-bg-color);
-        color: var(--modal-font-color);
+        color: var(--font-color);
         box-shadow: 0px 4px 23px 0 rgba(0, 0, 0, 0.2);
         width: 90%;
         max-height: 100%;

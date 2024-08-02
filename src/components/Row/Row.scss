@@ -4,24 +4,23 @@
     justify-content: center;
     color: var(--gray);
 
-    &.incorrect .letter {
-        animation: shake 0.5s;
-    }
-
-    &.correct,
-    &.revealed:not(:first-child):not(:has(.incorrect)) {
-        animation: flip 1s;
-
-        .letter {
-            background: var(--green);
-            color: var(--bg-color);
+    &:not(:first-child) {
+        &:not(.correct),
+        &:not(.incorrect) {
+            .letter:not(:empty) {
+                border-color: var(--content-border);
+                color: var(--font-color);
+                animation: PopIn 0.5s;
+            }
         }
     }
 
-    &:not(.correct) .letter:not(:empty) {
-        border-color: var(--content-border);
-        color: black;
-        animation: PopIn 0.5s;
+    &.shake .letter {
+        animation: shake 0.5s !important;
+    }
+
+    &.revealed:not(:first-child):has(.correct) .letter {
+        animation: flip 0.5s;
     }
 
     .letter {
@@ -33,21 +32,29 @@
         border: 2px solid var(--border-color);
         align-content: center;
         text-align: center;
-        background-color: white;
+        background-color: var(--bg-color);
         display: inline-block;
         text-transform: uppercase;
         font-family: Arial, Helvetica, sans-serif;
         box-sizing: border-box;
 
         &.revealed,
-        &.incorrect {
+        &.incorrect,
+        &.correct {
             border: 0;
             background: var(--dark-gray);
-            color: var(--bg-color) !important;
+            color: var(--tile-font-color) !important;
         }
+    }
 
+    &:not(:first-child) .letter {
         &.incorrect {
             background: var(--red);
+        }
+
+        &.correct {
+            background: var(--green);
+            color: var(--tile-font-color);
         }
 
         &.gameOver {
