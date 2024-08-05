@@ -41,19 +41,26 @@ const GameOverModal = forwardRef<ModalRef, GameOverModalProps>((props, ref) => {
     useEffect(() => refreshGames, [])
 
     const share = () => {
-        let gameShare = `Chainlinked  ${props.gameKey} ${totalStrikes}/${constants.MAX_STRIKES} \n`;
+        let gameSharePlain = `Chainlinked  ${props.gameKey} ${totalStrikes}/${constants.MAX_STRIKES} \n`;
         props.words?.forEach((word, wordIndex) => {
             word.text.split("").forEach((letter, index) => {
                 if (index === 0 || wordIndex === 0) {
-                    gameShare += "⬛️";
+                    gameSharePlain += "⬛️";
                 } else {
-                    gameShare += index > 0 && index <= word.strikes ? "🟥" : (word.revealed ? "🟩" : "⬛️");
+                    gameSharePlain += index > 0 && index <= word.strikes ? "🟥" : (word.revealed ? "🟩" : "⬛️");
                 }
             })
-            gameShare += "\n";
+            gameSharePlain += "\n";
         })
 
-        navigator.clipboard.writeText(gameShare);
+        var gameShareRich = gameSharePlain.replace("Chainlinked", '<a href="https://chainlinked.jackp.me">Chainlinked</a>');
+
+        const data = [new ClipboardItem({
+            ["text/plain"]: new Blob([gameSharePlain], { type: "text/plain" }),
+            ["text/html"]: new Blob([gameShareRich], { type: "text/html" })
+        })]
+
+        navigator.clipboard.write(data);
     }
 
     return <Modal ref={modalRef} open={open}>
