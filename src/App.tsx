@@ -1,9 +1,8 @@
-import { HowToPlayModal, Keyboard, Mistakes, ModalRef, RandomGameButton, Row } from "./components";
+import { GameOverModal, HowToPlayModal, Keyboard, Mistakes, ModalRef, RandomGameButton, Row } from "./components";
 import { Word } from "chainlinked";
 import useChainlink from "./useChainlink";
 import { createRef, useEffect, useMemo } from "react";
 import './App.scss';
-import GameOverModal from "./components/GameOverModal";
 import constants from "./constants";
 
 const App = () => {
@@ -17,7 +16,7 @@ const App = () => {
   var url = new URLSearchParams(window.location.search);
   const gameKey = url.get('gameKey') ?? todayKey;
 
-  const { words, wordRefs, currentGuess, handleKeyPress } = useChainlink(gameKey);
+  const { words, wordRefs, currentGuess, handleKeyPress, alertRef } = useChainlink(gameKey);
 
   const totalStrikes = useMemo(() => {
     return words?.reduce((acc, word) => acc + word.strikes, 0);
@@ -30,12 +29,16 @@ const App = () => {
 
   useEffect(() => {
     if (totalStrikes >= constants.MAX_STRIKES) {
-      gameOver.current?.open();
+      setTimeout(() => {
+        gameOver.current?.open();
+      }, 2 * 1000);
     }
 
     const gameWon = words != null && words.length > 0 && words.every((word) => word.revealed) && totalStrikes < constants.MAX_STRIKES;
     if (gameWon) {
-      gameOver.current?.open();
+      setTimeout(() => {
+        gameOver.current?.open();
+      }, 500);
     }
   }, [words, gameOver, totalStrikes])
 
@@ -79,6 +82,8 @@ const App = () => {
         </div>
         <p>Chain the words together.</p>
       </div>
+
+      <div className='alerts' ref={alertRef}></div>
 
       <div className="Game">
         {words.length === 0 ? <div className="lds-ripple"><div></div><div></div></div> : <></>}

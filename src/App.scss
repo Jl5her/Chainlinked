@@ -223,3 +223,44 @@ html {
         opacity: 0;
     }
 }
+
+.alerts {
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    .alert {
+        background: white;
+        padding: 0.5rem;
+        border-radius: 0.25rem;
+        animation: fade-in 300ms ease-in-out, fade-out 300ms ease-in-out 2s;
+        font-weight: 600;
+        font-size: 16px;
+
+    }
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fade-out {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}

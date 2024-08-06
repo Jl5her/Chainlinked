@@ -53,7 +53,7 @@ const GameOverModal = forwardRef<ModalRef, GameOverModalProps>((props, ref) => {
             gameSharePlain += "\n";
         })
 
-        var gameShareRich = gameSharePlain.replace("Chainlinked", '<a href="https://chainlinked.jackp.me">Chainlinked</a>');
+        var gameShareRich = gameSharePlain.replace("Chainlinked", '<a href="https://chainlinked.jackp.me">Chainlinked</a>').replaceAll("\n", "<br>");
 
         const data = [new ClipboardItem({
             ["text/plain"]: new Blob([gameSharePlain], { type: "text/plain" }),

@@ -2,6 +2,7 @@ import { Game, Word } from "chainlinked";
 import { createRef, useCallback, useEffect, useMemo, useState } from "react";
 import { generateGame } from "./Game";
 import constants from "./constants";
+import wordExists from "word-exists";
 
 const loadGame = (gameKey: string): Game | null => {
     const savedGames = localStorage.getItem('chainlink-games');
@@ -36,6 +37,8 @@ const useChainlink = (gameKey: string) => {
         }, {} as { [key: string]: React.RefObject<HTMLDivElement> })
     }, [words])
 
+    const alertRef = createRef<HTMLDivElement>();
+
     const totalStrikes = useMemo(() => {
         return words.reduce((acc, word) => acc + word.strikes, 0);
     }, [words])
@@ -47,6 +50,17 @@ const useChainlink = (gameKey: string) => {
         let loadedGame = loadGame(gameKey);
         setWords(loadedGame?.words ?? [])
     }, [])
+
+    const showAlert = useCallback((alertMessage: string) => {
+        const newAlert = document.createElement('span');
+        newAlert.classList.add('alert');
+        newAlert.textContent = alertMessage;
+        alertRef?.current?.appendChild(newAlert);
+
+        setTimeout(() => {
+            newAlert.remove();
+        }, 2.3 * 1000);
+    }, [alertRef])
 
     // Attempt to load game when the game key changes
     useEffect(() => {
@@ -84,6 +98,13 @@ const useChainlink = (gameKey: string) => {
 
             setCurrentGuess('');
 
+            const guessWord = currentWord.text.substring(0, currentWord.strikes + 1) + currentGuess;
+
+            if (!wordExists(guessWord)) {
+                showAlert('Not in word list')
+                return;
+            }
+
             const isCorrect = currentWordRemaining.toLowerCase() === currentGuess.toLowerCase();
 
             // Check if the word is correct
@@ -118,7 +139,7 @@ const useChainlink = (gameKey: string) => {
                 saveState(newWords);
             }
         }
-    }, [words, totalStrikes, currentGuess, saveState, wordRefs])
+    }, [words, totalStrikes, currentGuess, saveState, wordRefs, showAlert])
 
     const handleKeyPress = useCallback((key: string) => {
         if (totalStrikes >= constants.MAX_STRIKES) return;
@@ -147,6 +168,7 @@ const useChainlink = (gameKey: string) => {
 
     return {
         words,
+        alertRef,
         wordRefs,
         submitWord,
         handleKeyPress,
