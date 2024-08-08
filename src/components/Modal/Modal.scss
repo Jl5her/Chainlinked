@@ -14,9 +14,16 @@ dialog {
     left: 0;
     border: none;
     justify-content: center;
-    align-items: center;
+    align-items: start;
+    padding-top: 4rem;
     background-color: var(--dialog-bg-color);
     z-index: 2000;
+
+    // Mobile devices
+    @media (max-width: 767px) {
+        padding-top: 0;
+        height: 100%;
+    }
 
     .Modal {
         max-width: 520px;
@@ -32,6 +39,17 @@ dialog {
         animation: FlyIn 200ms;
         box-sizing: border-box;
         margin: 0;
+        z-index: 9999;
+
+        @media (max-width: 767px) {
+            max-width: 100%;
+            width: 100%;
+            height: 100%;
+            border-radius: 0;
+            border: none;
+            box-shadow: none;
+            padding: 16px;
+        }
 
         button.closeButton {
             width: 30px;
@@ -59,7 +77,10 @@ dialog {
         .Modal-Content {
             padding: 16px;
             width: 100%;
+            height: 100%;
             box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
 
             h2 {
                 font-family: nyt-karnakcondensed, 'Arial Narrow', Arial, sans-serif;

@@ -3,10 +3,11 @@ import constants from "../../constants";
 import "./MistakeDistribution.scss";
 
 interface MistakeDistributionProps {
+    currentMistakes?: number;
     games: Game[];
 }
 
-const MistakeDistribution = ({ games }: MistakeDistributionProps) => {
+const MistakeDistribution = ({ currentMistakes, games }: MistakeDistributionProps) => {
 
     const getTotalStrikes = (game: Game) => {
         return game.words.reduce((total, word) => total + word.strikes, 0);
@@ -39,7 +40,7 @@ const MistakeDistribution = ({ games }: MistakeDistributionProps) => {
                 return <div className="graphContainer">
                     <label>{index}</label>
                     <div className="graph">
-                        <div className="bar" style={{ width: getWidth(mistakes) }}>
+                        <div className={`bar ${index === currentMistakes ? 'active' : ''}`} style={{ width: getWidth(mistakes) }}>
                             <span>{mistakes}</span>
                         </div>
                     </div>

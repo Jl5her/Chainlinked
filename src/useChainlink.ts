@@ -170,6 +170,7 @@ const useChainlink = (gameKey: string) => {
         words,
         alertRef,
         wordRefs,
+        showAlert,
         submitWord,
         handleKeyPress,
         currentGuess

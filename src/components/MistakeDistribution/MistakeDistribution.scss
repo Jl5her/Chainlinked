@@ -59,6 +59,10 @@ dialog .Modal-Content {
                         line-height: 18px;
                         padding-right: 8px;
                     }
+
+                    &.active {
+                        background-color: var(--modal-bar-active-bg-color);
+                    }
                 }
             }
         }

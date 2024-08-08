@@ -4,6 +4,7 @@ import useChainlink from "./useChainlink";
 import { createRef, useEffect, useMemo } from "react";
 import './App.scss';
 import constants from "./constants";
+import AppContext from "./context";
 
 const App = () => {
   const tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
@@ -16,7 +17,7 @@ const App = () => {
   var url = new URLSearchParams(window.location.search);
   const gameKey = url.get('gameKey') ?? todayKey;
 
-  const { words, wordRefs, currentGuess, handleKeyPress, alertRef } = useChainlink(gameKey);
+  const { words, wordRefs, currentGuess, handleKeyPress, alertRef, showAlert } = useChainlink(gameKey);
 
   const totalStrikes = useMemo(() => {
     return words?.reduce((acc, word) => acc + word.strikes, 0);
@@ -42,7 +43,7 @@ const App = () => {
     }
   }, [words, gameOver, totalStrikes])
 
-  return <>
+  return <AppContext.Provider value={{ showAlert }}>
     <HowToPlayModal ref={howToPlay} />
     <GameOverModal ref={gameOver}
       words={words}
@@ -53,6 +54,7 @@ const App = () => {
         <button
           className="button"
           onClick={() => howToPlay.current?.open()}>
+          <span>Help</span>
           <svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="24.000000pt" height="24.000000pt" viewBox="0 0 24.000000 24.000000" preserveAspectRatio="xMidYMid meet">
             <g transform="translate(0.000000,24.000000) scale(0.100000,-0.100000)" fill="#000000" stroke="none">
               <path d="M71 206 c-87 -48 -50 -186 49 -186 51 0 100 49 100 99 0 75 -83 124 -149 87z m104 -31 c33 -32 33 -78 0 -110 -49 -50 -135 -15 -135 55 0 41 39 80 80 80 19 0 40 -9 55 -25z" />
@@ -63,6 +65,7 @@ const App = () => {
         </button>
 
         <button className="button" onClick={() => { gameOver.current?.open(); }}>
+          <span>Stats</span>
           <svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="50.000000pt" height="50.000000pt" viewBox="0 0 50.000000 50.000000" preserveAspectRatio="xMidYMid meet">
             <g transform="translate(0.000000,50.000000) scale(0.100000,-0.100000)" fill="#000000" stroke="none">
               <path d="M340 230 l0 -230 70 0 70 0 0 230 0 230 -70 0 -70 0 0 -230z m120 0 l0 -210 -50 0 -50 0 0 210 0 210 50 0 50 0 0 -210z" />
@@ -72,7 +75,7 @@ const App = () => {
           </svg>
         </button>
 
-        <RandomGameButton />
+        <RandomGameButton label="Random" />
       </div>
 
       <div className="title">
@@ -106,8 +109,7 @@ const App = () => {
       <Mistakes totalStrikes={totalStrikes} />
       <Keyboard onKeyPress={handleKeyPress} />
     </div>
-  </>
-
+  </AppContext.Provider>
 }
 
 export default App;
